@@ -9,13 +9,17 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));  // To support PUT and DELETE methods
 
-// MySQL connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',  // replace with your MySQL username
-    password: 'piyush@223',  // replace with your MySQL password
-    database: 'productDB'
+const dbHost = process.env.DB_HOST || 'localhost';
+const dbPort = process.env.DB_PORT || 3306;
+
+const connection = mysql.createConnection({
+  host: dbHost,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: dbPort
 });
+
 
 // Basic authentication middleware
 const auth = (req, res, next) => {
