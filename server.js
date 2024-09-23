@@ -41,7 +41,6 @@ const auth = (req, res, next) => {
 // Protect the /admin route and all its subroutes with the auth middleware
 app.use('/admin', auth);
 
-// Route to display products on the main page
 app.get('/', (req, res) => {
     let sql = 'SELECT * FROM products';
     db.query(sql, (err, result) => {
@@ -119,6 +118,19 @@ app.delete('/admin/delete/:id', (req, res) => {
         res.redirect('/admin');
     });
 });
+
+// Route to display a single product by ID
+app.get('/product/:id', (req, res) => {
+    let sql = 'SELECT * FROM products WHERE id = ?';
+    db.query(sql, [req.params.id], (err, result) => {
+        if (err) {
+            res.send('Error fetching product');
+            return;
+        }
+        res.render('product', { product: result[0] });
+    });
+});
+
 // Start the server
 app.listen(5000, () => {
     console.log('Server running on http://localhost:5000');
